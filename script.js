@@ -5,6 +5,11 @@ const scrollButton = document.querySelector(".scroll-up-btn");
 const profileCard = document.querySelector(".profile-card");
 const themeToggle = document.querySelector(".theme-toggle");
 const languageToggle = document.querySelector(".language-toggle");
+const viewCounter = document.querySelector(".view-counter");
+const viewCounterNumber = document.querySelector("[data-view-count]");
+
+const VIEW_COUNT_KEY = "portfolioPageViews";
+const VIEW_SESSION_KEY = "portfolioPageViewRegistered";
 
 const translations = {
     vi: {
@@ -15,6 +20,8 @@ const translations = {
         controlsAria: "Tùy chọn giao diện",
         themeAria: "Đổi giao diện sáng tối",
         languageAria: "Đổi ngôn ngữ",
+        viewsAria: "Số lượt xem trang",
+        viewsLabel: "lượt xem",
         menuAria: "Mở menu",
         themeToggle: "Tối",
         themeLight: "Sáng",
@@ -92,6 +99,8 @@ const translations = {
         controlsAria: "Display options",
         themeAria: "Toggle light and dark theme",
         languageAria: "Switch language",
+        viewsAria: "Page view count",
+        viewsLabel: "views",
         menuAria: "Open menu",
         themeToggle: "Dark",
         themeLight: "Light",
@@ -166,6 +175,39 @@ const translations = {
 const getStoredTheme = () => localStorage.getItem("theme") || "dark";
 const getStoredLanguage = () => localStorage.getItem("language") || "vi";
 
+const getStoredViewCount = () => {
+    const count = Number.parseInt(localStorage.getItem(VIEW_COUNT_KEY) || "0", 10);
+    return Number.isFinite(count) && count > 0 ? count : 0;
+};
+
+const formatViewCount = (count) => {
+    const locale = document.documentElement.lang === "en" ? "en-US" : "vi-VN";
+    return count.toLocaleString(locale);
+};
+
+const updateViewCounter = (count = getStoredViewCount()) => {
+    if (!viewCounterNumber) {
+        return;
+    }
+
+    viewCounterNumber.textContent = formatViewCount(count);
+};
+
+const registerPageView = () => {
+    if (!viewCounter) {
+        return;
+    }
+
+    let count = getStoredViewCount();
+    if (sessionStorage.getItem(VIEW_SESSION_KEY) !== "true") {
+        count += 1;
+        localStorage.setItem(VIEW_COUNT_KEY, String(count));
+        sessionStorage.setItem(VIEW_SESSION_KEY, "true");
+    }
+
+    updateViewCounter(count);
+};
+
 const updateThemeToggleLabel = () => {
     const language = getStoredLanguage();
     const dictionary = translations[language] || translations.vi;
@@ -213,10 +255,12 @@ const applyLanguage = (language) => {
 
     localStorage.setItem("language", language);
     updateThemeToggleLabel();
+    updateViewCounter();
 };
 
 applyTheme(getStoredTheme());
 applyLanguage(getStoredLanguage());
+registerPageView();
 
 const setScrolledState = () => {
     const isScrolled = window.scrollY > 24;

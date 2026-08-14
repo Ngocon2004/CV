@@ -172,7 +172,8 @@ body.light-theme .navbar.scrolled {
 .menu-toggle,
 .scroll-up-btn,
 .theme-toggle,
-.language-toggle {
+.language-toggle,
+.view-counter {
     display: none;
     align-items: center;
     justify-content: center;
@@ -180,17 +181,45 @@ body.light-theme .navbar.scrolled {
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.08);
     color: var(--text);
+}
+
+.menu-toggle,
+.scroll-up-btn,
+.theme-toggle,
+.language-toggle {
     cursor: pointer;
 }
 
 .theme-toggle,
-.language-toggle {
+.language-toggle,
+.view-counter {
     display: inline-flex;
     min-height: 40px;
     gap: 8px;
     color: var(--text);
     font-weight: 800;
     padding: 9px 11px;
+}
+
+.view-counter {
+    min-width: 118px;
+    border-color: rgba(56, 213, 255, 0.28);
+    background: rgba(56, 213, 255, 0.09);
+    white-space: nowrap;
+}
+
+.view-counter i {
+    color: var(--cyan);
+}
+
+.view-counter__number {
+    font-variant-numeric: tabular-nums;
+}
+
+.view-counter__label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
 }
 
 .theme-toggle:hover,
@@ -200,9 +229,15 @@ body.light-theme .navbar.scrolled {
 
 body.light-theme .theme-toggle,
 body.light-theme .language-toggle,
+body.light-theme .view-counter,
 body.light-theme .menu-toggle,
 body.light-theme .scroll-up-btn {
     background: rgba(13, 24, 42, 0.05);
+}
+
+body.light-theme .view-counter {
+    border-color: rgba(0, 119, 182, 0.26);
+    background: rgba(0, 119, 182, 0.07);
 }
 
 body.light-theme .theme-toggle:hover,
@@ -933,6 +968,15 @@ footer {
         grid-template-columns: 1fr;
     }
 
+    .view-counter {
+        min-width: 62px;
+        padding: 9px 10px;
+    }
+
+    .view-counter__label {
+        display: none;
+    }
+
     .hero {
         gap: 24px;
     }
@@ -970,15 +1014,23 @@ footer {
     }
 
     .theme-toggle,
-    .language-toggle {
+    .language-toggle,
+    .view-counter {
         width: 42px;
         min-height: 42px;
         padding: 0;
     }
 
     .theme-toggle span,
-    .language-toggle span {
+    .language-toggle span,
+    .view-counter__label {
         display: none;
+    }
+
+    .view-counter {
+        width: auto;
+        min-width: 58px;
+        padding: 0 8px;
     }
 
     .menu {
@@ -1061,6 +1113,15 @@ footer {
 }
 
 @media (max-width: 420px) {
+    .nav-controls {
+        gap: 6px;
+    }
+
+    .view-counter {
+        min-width: 52px;
+        padding: 0 6px;
+    }
+
     .hero-actions {
         display: grid;
     }

@@ -8,6 +8,7 @@ const languageToggle = document.querySelector(".language-toggle");
 const viewCounter = document.querySelector(".view-counter");
 const viewCounterNumber = document.querySelector("[data-view-count]");
 
+const VIEW_COUNT_BASELINE = 237;
 const VIEW_COUNT_KEY = "portfolioPageViews";
 const VIEW_SESSION_KEY = "portfolioPageViewRegistered";
 
@@ -175,10 +176,12 @@ const translations = {
 const getStoredTheme = () => localStorage.getItem("theme") || "dark";
 const getStoredLanguage = () => localStorage.getItem("language") || "vi";
 
-const getStoredViewCount = () => {
-    const count = Number.parseInt(localStorage.getItem(VIEW_COUNT_KEY) || "0", 10);
+const getRawStoredViewCount = () => {
+    const count = Number.parseInt(localStorage.getItem(VIEW_COUNT_KEY) || "", 10);
     return Number.isFinite(count) && count > 0 ? count : 0;
 };
+
+const getStoredViewCount = () => Math.max(getRawStoredViewCount(), VIEW_COUNT_BASELINE);
 
 const formatViewCount = (count) => {
     const locale = document.documentElement.lang === "en" ? "en-US" : "vi-VN";
@@ -198,11 +201,18 @@ const registerPageView = () => {
         return;
     }
 
-    let count = getStoredViewCount();
+    const rawCount = getRawStoredViewCount();
+    let count = Math.max(rawCount, VIEW_COUNT_BASELINE);
+
     if (sessionStorage.getItem(VIEW_SESSION_KEY) !== "true") {
-        count += 1;
+        if (rawCount >= VIEW_COUNT_BASELINE) {
+            count += 1;
+        }
+
         localStorage.setItem(VIEW_COUNT_KEY, String(count));
         sessionStorage.setItem(VIEW_SESSION_KEY, "true");
+    } else if (rawCount < VIEW_COUNT_BASELINE) {
+        localStorage.setItem(VIEW_COUNT_KEY, String(count));
     }
 
     updateViewCounter(count);
